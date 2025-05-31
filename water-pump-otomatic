@@ -1,0 +1,57 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+const int soilPin = A0;
+const int rainPin = A1;
+const int relayPin = 8;
+const int buzzerPin = 7;
+
+int soilValue;
+int rainValue;
+int soilThreshold = 500;   // Sesuaikan angka ini untuk mendeteksi 'kering'
+int rainThreshold = 500;   // Sesuaikan angka ini untuk mendeteksi 'hujan'
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); // Alamat I2C LCD, bisa 0x27 atau 0x3F
+
+void setup() {
+  pinMode(relayPin, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  digitalWrite(relayPin, HIGH); // Matikan pompa di awal (relay aktif LOW)
+
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.backlight();
+}
+
+void loop() {
+  soilValue = analogRead(soilPin);
+  rainValue = analogRead(rainPin);
+
+  Serial.print("Soil: ");
+  Serial.print(soilValue);
+  Serial.print(" | Rain: ");
+  Serial.println(rainValue);
+
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Soil: ");
+  lcd.print(soilValue);
+
+  lcd.setCursor(0, 1);
+
+  if (soilValue > soilThreshold && rainValue < rainThreshold) {
+    // Tanah kering dan tidak hujan → Siram
+    digitalWrite(relayPin, LOW);     // Pompa ON
+    digitalWrite(buzzerPin, HIGH);   // Buzzer ON
+    lcd.print("Tanah Kering");
+    Serial.println("Menyiram tanaman...");
+  } else {
+    // Tidak perlu menyiram
+    digitalWrite(relayPin, HIGH);    // Pompa OFF
+    digitalWrite(buzzerPin, LOW);    // Buzzer OFF
+    lcd.print("Tanah Basah");
+    Serial.println("Pompa mati.");
+  }
+
+  delay(2000); // Delay agar pembacaan tidak terlalu cepat
+}
