@@ -40,40 +40,6 @@ void loop() {
   lcd.setCursor(0, 1);
 
   if (soilValue > soilThreshold && rainValue < rainThreshold) {
-    // Tanah kering dan tidak hujan → Siram
-    digitalWrite(relayPin, LOW);     // Pompa ON
-    digitalWrite(buzzerPin, HIGH);   // Buzzer ON
-    lcd.print("Tanah Kering");
-    Serial.println("Menyiram tanaman...");
-  } else {
-    // Tidak perlu menyiram
-    digitalWrite(relayPin, HIGH);    // Pompa OFF
-    digitalWrite(buzzerPin, LOW);    // Buzzer OFF
-    lcd.print("Tanah Basah");
-    Serial.println("Pompa mati.");
-  }
-
-  delay(2000); // Delay agar pembacaan tidak terlalu cepat
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-versi tone/no tone 
-if (soilValue > soilThreshold && rainValue < rainThreshold) {
   digitalWrite(relayPin, LOW);      // Pompa ON
   tone(buzzerPin, 1000);            // Buzzer ON dengan nada 1000 Hz
   lcd.print("Tanah Kering");
@@ -84,3 +50,7 @@ if (soilValue > soilThreshold && rainValue < rainThreshold) {
   lcd.print("Tanah Basah");
   Serial.println("Pompa mati.");
 }
+
+  delay(2000); // Delay agar pembacaan tidak terlalu cepat
+}
+
